@@ -5,13 +5,20 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Controller {
@@ -31,6 +38,12 @@ public class Controller {
     private Button gameBttn1;
     @FXML
     private Pane road1;
+    @FXML
+    private Pane road2;
+    @FXML
+    private Pane road3;
+    @FXML
+    private Pane road4;
 
     private Stage primaryStage;
     private File musicFile;
@@ -39,17 +52,15 @@ public class Controller {
 
     private Timeline afterLoadTimeline;
 
-    private Animation animation;
-
     private GameLogic gameLogic;
 
     int bands = 128;
     float[] magnitudes = new float[bands]; //default 128 bands
     float[] phases = new float[bands]; //same
 
-    public Controller() {
-        gameLogic = new GameLogic();
+    ArrayList<Pane> panes = new ArrayList<>();
 
+    public Controller() {
         afterLoadTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(1.0), e -> { //przekleta lambda
                     stateLbl.setText(musicService.getStatus());
@@ -63,6 +74,30 @@ public class Controller {
         afterLoadTimeline.setCycleCount(Timeline.INDEFINITE);
     }
 
+    @FXML
+    private void initialize() throws FileNotFoundException {
+//        File input = new File("resources/note_icon.png");
+//        Image image = new Image(input.toURI().toString());
+//        ImageView noteView = new ImageView(image);
+//
+//        noteView.setX(10);
+//        noteView.setY(10);
+//        noteView.setFitHeight(100);
+//        noteView.setFitWidth(100);
+//
+//        Rectangle rec = new Rectangle(10, 10, 100, 100);
+//        rec.setFill(Color.BROWN);
+//
+//        road1.getChildren().addAll(noteView);
+
+        panes.add(road1);
+        panes.add(road2);
+        panes.add(road3);
+        panes.add(road4);
+
+        gameLogic = new GameLogic(panes);
+    }
+
     public void setPrimaryStage(Stage stage) {
         this.primaryStage = stage;
     }
@@ -71,12 +106,6 @@ public class Controller {
         musicService = new MusicService(musicFile.toURI().toString());
         fileNameLbl.setText(musicFile.getName());
         afterLoadTimeline.play();
-        initializeAnimation();
-    }
-
-    private void initializeAnimation(){
-        animation = new Animation();
-        animation.noteFall(noteImage1, road1);
     }
 
     @FXML
@@ -97,6 +126,7 @@ public class Controller {
     @FXML
     private void playMusic() {
         musicService.play();
+        gameLogic.startGame();
     }
 
     @FXML

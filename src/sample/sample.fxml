@@ -95,6 +95,9 @@
             <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="D" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
             <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="F" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
             <Pane fx:id="road1" prefHeight="200.0" prefWidth="200.0" />
+            <Pane fx:id="road2" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
+            <Pane fx:id="road3" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" />
+            <Pane fx:id="road4" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" />
          </children>
       </GridPane>
    </children>
