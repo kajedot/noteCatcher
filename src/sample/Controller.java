@@ -2,21 +2,18 @@ package sample;
 
 import javafx.animation.*;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -31,19 +28,35 @@ public class Controller {
     @FXML
     private Label generalTimeLbl;
     @FXML
+    private Label pointsLbl;
+    @FXML
     private Slider timeSlider;
     @FXML
-    private ImageView noteImage1;
+    private Button gameBttn0;
     @FXML
     private Button gameBttn1;
+    @FXML
+    private Button gameBttn2;
+    @FXML
+    private Button gameBttn3;
+    @FXML
+    private Pane road0;
     @FXML
     private Pane road1;
     @FXML
     private Pane road2;
     @FXML
     private Pane road3;
-    @FXML
-    private Pane road4;
+
+    public void setRoot(Parent root) {
+        this.root = root;
+    }
+
+    private Parent root;
+
+    public void setPrimaryStage(Stage stage) {
+        this.primaryStage = stage;
+    }
 
     private Stage primaryStage;
     private File musicFile;
@@ -69,6 +82,8 @@ public class Controller {
                     generalTimeLbl.setText(musicService.getStopTimeStr());
 
                     timeSlider.adjustValue(musicService.getCurrentTime().toMillis() * 100 / musicService.getStopTime().toMillis());
+
+                    pointsLbl.setText("Points: " + Integer.toString(gameLogic.getPoints()));
                 })
         );
         afterLoadTimeline.setCycleCount(Timeline.INDEFINITE);
@@ -76,36 +91,17 @@ public class Controller {
 
     @FXML
     private void initialize() throws FileNotFoundException {
-//        File input = new File("resources/note_icon.png");
-//        Image image = new Image(input.toURI().toString());
-//        ImageView noteView = new ImageView(image);
-//
-//        noteView.setX(10);
-//        noteView.setY(10);
-//        noteView.setFitHeight(100);
-//        noteView.setFitWidth(100);
-//
-//        Rectangle rec = new Rectangle(10, 10, 100, 100);
-//        rec.setFill(Color.BROWN);
-//
-//        road1.getChildren().addAll(noteView);
-
+        panes.add(road0);
         panes.add(road1);
         panes.add(road2);
         panes.add(road3);
-        panes.add(road4);
 
         gameLogic = new GameLogic(panes);
-    }
-
-    public void setPrimaryStage(Stage stage) {
-        this.primaryStage = stage;
     }
 
     private void initializeFile() {
         musicService = new MusicService(musicFile.toURI().toString());
         fileNameLbl.setText(musicFile.getName());
-        afterLoadTimeline.play();
     }
 
     @FXML
@@ -123,9 +119,41 @@ public class Controller {
         }
     }
 
+    public void setGlobalEventHandler(Parent root) {
+        root.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
+            gameLogic.checkIfScored(ev.getCode(), Duration.millis(System.nanoTime()/1000000.));
+        });
+
+    }
+
+    @FXML
+    private void gameBttn0Action() {
+        System.out.println("pressed A");
+        gameBttn0.requestFocus();
+    }
+
+    @FXML
+    private void gameBttn1Action() {
+        System.out.println("pressed S");
+        gameBttn1.requestFocus();
+    }
+
+    @FXML
+    private void gameBttn2Action() {
+        System.out.println("pressed D");
+        gameBttn2.requestFocus();
+    }
+
+    @FXML
+    private void gameBttn3Action() {
+        System.out.println("pressed F");
+        gameBttn3.requestFocus();
+    }
+
     @FXML
     private void playMusic() {
         musicService.play();
+        afterLoadTimeline.play();
         gameLogic.startGame();
     }
 

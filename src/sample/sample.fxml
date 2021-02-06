@@ -33,7 +33,7 @@
         </rowConstraints>
          <children>
             <Slider fx:id="timeSlider" maxHeight="-Infinity" prefHeight="26.0" prefWidth="456.0" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
-            <Label fx:id="elapsedTimeLbl" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="69.0" text="--:--" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="SOMETIMES">
+            <Label fx:id="elapsedTimeLbl" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="189.0" text="--:--" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="SOMETIMES">
                <GridPane.margin>
                   <Insets right="5.0" />
                </GridPane.margin></Label>
@@ -75,7 +75,7 @@
         </rowConstraints>
          <children>
             <Label fx:id="fileNameLbl" text="file name" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-            <Label text="points" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
+            <Label fx:id="pointsLbl" text="points" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
          </children>
       </GridPane>
       <GridPane GridPane.rowIndex="1">
@@ -87,17 +87,24 @@
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="gameBttn1" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="A" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="S" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="D" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="F" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-            <Pane fx:id="road1" prefHeight="200.0" prefWidth="200.0" />
-            <Pane fx:id="road2" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
-            <Pane fx:id="road3" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" />
-            <Pane fx:id="road4" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" />
+            <Pane fx:id="road0" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="gameBttn0" layoutX="69.0" layoutY="460.0" mnemonicParsing="false" onAction="#gameBttn0Action" prefHeight="60.0" prefWidth="60.0" text="A" />
+               </children></Pane>
+            <Pane fx:id="road1" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+               <children>
+                  <Button fx:id="gameBttn1" layoutX="69.0" layoutY="460.0" mnemonicParsing="false" onAction="#gameBttn1Action" prefHeight="60.0" prefWidth="60.0" text="S" />
+               </children></Pane>
+            <Pane fx:id="road2" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+               <children>
+                  <Button fx:id="gameBttn2" layoutX="69.0" layoutY="460.0" mnemonicParsing="false" onAction="#gameBttn2Action" prefHeight="60.0" prefWidth="60.0" text="D" />
+               </children></Pane>
+            <Pane fx:id="road3" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3">
+               <children>
+                  <Button fx:id="gameBttn3" layoutX="69.0" layoutY="460.0" mnemonicParsing="false" onAction="#gameBttn3Action" prefHeight="60.0" prefWidth="60.0" text="F" />
+               </children></Pane>
          </children>
       </GridPane>
    </children>

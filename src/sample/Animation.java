@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.animation.Interpolator;
+import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
 import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
@@ -8,16 +9,20 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.util.Duration;
 
-import java.util.Queue;
+import java.util.ArrayList;
 
 public class Animation {
+    ParallelTransition parallelTransition;
 
     public Animation(){
+        parallelTransition = new ParallelTransition();
     }
 
-    public void noteFall(ImageView noteImage, Pane road){
+    public void noteFall(Note note, Pane road){
+
+        ImageView noteImage = note.noteView;
+
         Point2D startPoint = new Point2D(road.getBoundsInLocal().getWidth()/2, 50);
         Point2D endPoint = new Point2D(road.getBoundsInLocal().getWidth()/2, road.getBoundsInLocal().getHeight());
 
@@ -38,16 +43,24 @@ public class Animation {
         road.getChildren().addAll(path, noteImage);
 
         PathTransition transition = new PathTransition();
-        transition.setDuration(Duration.seconds(3));
+        transition.setDuration(note.fallingDuration);
         transition.setPath(path);
         transition.setCycleCount(1);
         transition.setInterpolator(Interpolator.LINEAR);
 
         transition.setNode(noteImage);
-        transition.play();
+        parallelTransition.getChildren().add(transition);
+
+        transition.setOnFinished(finish -> {
+            road.getChildren().remove(path);
+            road.getChildren().remove(noteImage);
+        });
     }
 
-    public void showNote(Note note, Pane pane){
-        noteFall(note.noteView, pane);
+    public void showNotes(ArrayList<Note> notes, ArrayList<Pane> panes){
+        for (Note n : notes) {
+            noteFall(n, panes.get(n.getRoadId()));
+        }
+        parallelTransition.play();
     }
 }
