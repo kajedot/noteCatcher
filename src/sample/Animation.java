@@ -33,18 +33,14 @@ public class Animation {
     }
 
     Set<Note> recentlyLandedNotes = new LinkedHashSet<>();
-    Queue<Note> notesRoad0 = new ArrayDeque<>();
-    Queue<Note> notesRoad1 = new ArrayDeque<>();
-    Queue<Note> notesRoad2 = new ArrayDeque<>();
-    Queue<Note> notesRoad3 = new ArrayDeque<>();
 
     public Animation(ArrayList<Pane> panes){
         roads.addAll(panes);
+
         notesQueues = new Queue[4];
-        notesQueues[0] = notesRoad0;
-        notesQueues[1] = notesRoad1;
-        notesQueues[2] = notesRoad2;
-        notesQueues[3] = notesRoad3;
+        for (int i=0; i<notesQueues.length; i++){
+            notesQueues[i] = new ArrayDeque<Note>();
+        }
     }
 
     public void noteFall(Note note, Pane road){
@@ -130,5 +126,6 @@ public class Animation {
 
     public void removeNoteFromRoad(int roadID){
         notesQueues[roadID].remove();
+
     }
 }
