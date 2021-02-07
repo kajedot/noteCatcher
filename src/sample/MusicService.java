@@ -53,6 +53,10 @@ public class MusicService {
         player.setAudioSpectrumListener(l);
     }
 
+    public void mute(){
+        player.setMute(true);
+    }
+
     public String getStatus(){
         return player.getStatus().toString();
     }

@@ -1,18 +1,23 @@
 package sample;
 
-import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
 
 public class GameLogic {
 
     private Animation animation;
     private SpectrumListener spectrumListener;
+    private MusicService analyzingMusicService;
+
+
+    int bands = 128;
+    float[] magnitudes = new float[bands]; //default 128 bands
+    float[] phases = new float[bands]; //same
+    float[] magnitudesCopy = new float[bands]; //default 128 bands
 
     public int getPoints() {
         return points;
@@ -21,21 +26,19 @@ public class GameLogic {
     int points = 0;
 
     ArrayList<Pane> panes;
-    ArrayList<Note> notes = new ArrayList<>(); //? list, queue or what? what if 2 notes at same time?
-    Set<Integer> pressedButtonsIDs = new HashSet<Integer>();
+    ArrayList<Note> notes = new ArrayList<>();
 
     public GameLogic(ArrayList<Pane> p){
         panes = p;
         initializeAnimation();
     }
 
-    public void startGame(){
-        notes.add(new Note(0, Duration.seconds(6), Duration.millis(System.nanoTime()/1000000.)));
-        notes.add(new Note(1, Duration.seconds(4), Duration.millis(System.nanoTime()/1000000.)));
-        notes.add(new Note(0, Duration.seconds(3), Duration.millis(System.nanoTime()/1000000.)));
-        //showNotes();
+    public void startGame(String musicPath){
+        initializeMusicService(musicPath);
         spectrumListener = new SpectrumListener();
         initializeSpectrumListener();
+        analyzingMusicService.play();
+        analyzingMusicService.mute();
     }
 
     private void initializeAnimation(){
@@ -60,17 +63,32 @@ public class GameLogic {
         }
     }
 
-    private void initializeSpectrumListener(){
-        double timestamp = System.nanoTime()/1000000.;
-        double duration = 1;
-        float[] magnitudes = new float[0];
-        float[] phases = new float[0];
-
-        spectrumListener.spectrumDataUpdate(timestamp, duration, magnitudes, phases);
+    private void initializeMusicService(String musicPath){
+        analyzingMusicService = new MusicService(musicPath);
     }
 
-    public void addNoteToAnim(){
-        animation.noteFall(notes.get(2), panes.get(notes.get(2).roadId));
+    private void initializeSpectrumListener(){
+        analyzingMusicService.setSpectrumListener(spectrumListener);
+    }
+
+    public void updateSpectrumListener(){
+        spectrumListener.spectrumDataUpdate(analyzingMusicService.getCurrentTime().toMillis(), 1, magnitudes, phases);
+        magnitudesCopy = spectrumListener.getMagnitudesCopy();
+
+        System.out.println(Arrays.toString(magnitudesCopy));
+
+        testSpectrumFall();
+    }
+
+    private void testSpectrumFall(){
+        if (magnitudesCopy[0] > 5){
+            addNoteToAnim(0, Duration.seconds(3), Duration.millis(System.nanoTime()/1000000.));
+        }
+    }
+
+    public void addNoteToAnim(int roadID, Duration fallDuration, Duration bornTime){
+        //notes.add(new Note(roadID, fallDuration, bornTime));
+        animation.noteFall(new Note(roadID, fallDuration, bornTime), panes.get(roadID));
     }
 
     private int keyCodeToID(KeyCode keyCode){

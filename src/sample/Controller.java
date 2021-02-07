@@ -6,7 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -16,7 +15,6 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class Controller {
@@ -49,77 +47,57 @@ public class Controller {
     @FXML
     private Pane road3;
 
-    public void setRoot(Parent root) {
-        this.root = root;
-    }
-
-    private Parent root;
-
     public void setPrimaryStage(Stage stage) {
         this.primaryStage = stage;
     }
 
     private Stage primaryStage;
     private File musicFile;
-
     private MusicService musicService;
-
-    private Timeline afterLoadTimeline;
-
+    private final Timeline afterLoadTimeline;
     private GameLogic gameLogic;
-
-    private final SpectrumListener spectrumListener = new SpectrumListener();
-
-    int bands = 128;
-    float[] magnitudes = new float[bands]; //default 128 bands
-    float[] phases = new float[bands]; //same
-    float[] magnitudesCopy = new float[bands]; //default 128 bands
-
 
     ArrayList<Pane> panes = new ArrayList<>();
 
+    int musicPlayersDelay = 3;
+    boolean startedMusic = false;
+
     public Controller() {
         afterLoadTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(1.0), e -> { //przekleta lambda
-                    testSpectrumFall();
-                    stateLbl.setText(musicService.getStatus());
+                new KeyFrame(Duration.seconds(1.0), e -> {
+                    gameLogic.updateSpectrumListener();
 
-                    elapsedTimeLbl.setText(musicService.getCurrentTimeStr());
-                    generalTimeLbl.setText(musicService.getStopTimeStr());
-
-                    timeSlider.adjustValue(musicService.getCurrentTime().toMillis() * 100 / musicService.getStopTime().toMillis());
-
-                    pointsLbl.setText("Points: " + Integer.toString(gameLogic.getPoints()));
+                    if (musicPlayersDelay > 0){
+                        musicPlayersDelay--;
+                    } else {
+                        if (! startedMusic){
+                            musicService.play();
+                            startedMusic = true;
+                        }
+                    }
+                    guiUpdates();
                 })
         );
         afterLoadTimeline.setCycleCount(Timeline.INDEFINITE);
-
-
-    }
-
-    private void testSpectrumFall(){
-        spectrumListener.spectrumDataUpdate(musicService.getCurrentTime().toMillis(), 1000, magnitudes, phases);
-        magnitudesCopy = spectrumListener.getMagnitudesCopy();
-
-        System.out.println(Arrays.toString(magnitudesCopy));
-
-        if (magnitudesCopy[0] > 5){
-            gameLogic.addNoteToAnim();
-        }
-
     }
 
     @FXML
-    private void initialize() throws FileNotFoundException {
+    private void initialize() {
         panes.add(road0);
         panes.add(road1);
         panes.add(road2);
         panes.add(road3);
+    }
 
-        gameLogic = new GameLogic(panes);
+    private void guiUpdates(){
+        stateLbl.setText(musicService.getStatus());
 
+        elapsedTimeLbl.setText(musicService.getCurrentTimeStr());
+        generalTimeLbl.setText(musicService.getStopTimeStr());
 
+        timeSlider.adjustValue(musicService.getCurrentTime().toMillis() * 100 / musicService.getStopTime().toMillis());
 
+        pointsLbl.setText("Points: " + Integer.toString(gameLogic.getPoints()));
     }
 
     private void initializeFile() {
@@ -174,10 +152,12 @@ public class Controller {
 
     @FXML
     private void playMusic() {
-        musicService.setSpectrumListener(spectrumListener);
-        musicService.play();
-        afterLoadTimeline.play();
-        gameLogic.startGame();
+        if (musicFile != null) {
+            gameLogic = new GameLogic(panes);
+            gameLogic.startGame(musicFile.toURI().toString());
+
+            afterLoadTimeline.play();
+        }
     }
 
     @FXML
