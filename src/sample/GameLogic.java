@@ -1,11 +1,15 @@
 package sample;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class GameLogic {
 
@@ -13,7 +17,11 @@ public class GameLogic {
     private SpectrumListener spectrumListener;
     private MusicService analyzingMusicService;
 
+    private final Timeline afterLoadTimeline;
 
+    Set<Note> landedNotes = new LinkedHashSet<>();
+
+    double tempoPeriod = 0.5; //here smth with tempo of music
     int bands = 128;
     float[] magnitudes = new float[bands]; //default 128 bands
     float[] phases = new float[bands]; //same
@@ -25,12 +33,28 @@ public class GameLogic {
 
     int points = 0;
 
-    ArrayList<Pane> panes;
+    ArrayList<Pane> panes = new ArrayList<>();
     ArrayList<Note> notes = new ArrayList<>();
 
     public GameLogic(ArrayList<Pane> p){
-        panes = p;
+        panes.addAll(p);
         initializeAnimation();
+
+        afterLoadTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(tempoPeriod), e -> {
+                    updateSpectrumListener();
+                    animation.lightButtonsWithNotes();
+                    manageLandedNotes();
+                })
+        );
+        afterLoadTimeline.setCycleCount(Timeline.INDEFINITE);
+
+    }
+
+    public void manageLandedNotes(){
+        landedNotes.clear();
+        landedNotes.addAll(animation.getRecentlyLandedNotes());
+        System.out.println("recently landed: " + landedNotes.toString());
     }
 
     public void startGame(String musicPath){
@@ -39,28 +63,32 @@ public class GameLogic {
         initializeSpectrumListener();
         analyzingMusicService.play();
         analyzingMusicService.mute();
+
+        afterLoadTimeline.play();
     }
 
     private void initializeAnimation(){
-        animation = new Animation();
-    }
-
-    private void showNotes(){
-            animation.showNotes(notes, panes);
+        animation = new Animation(panes);
     }
 
     public void checkIfScored(KeyCode keyCode, Duration strikeTime){
         int keyId = keyCodeToID(keyCode);
-        for (Note n : notes){
-            double strikeLandingDiff = Math.abs(strikeTime.subtract(n.getLandingTime()).toMillis());
-            if (strikeLandingDiff < 1000 & keyId == n.roadId){
-                System.out.println("POINT " + strikeLandingDiff);
+        for (Note n : landedNotes){
+            //double strikeLandingDiff = Math.abs(strikeTime.subtract(n.getLandingTime()).toMillis());
+            if (keyId == n.roadId){ //strikeLandingDiff < 1000 &
+                System.out.println("POINT " + keyId);
                 points++;
+                landedNotes.remove(n);
             }
             else {
                 System.out.println("strike time: " + strikeTime + " Note landing time: " + n.getLandingTime());
             }
         }
+    }
+
+    public void addPoint(int roadId){
+        points++;
+        animation.removeNoteFromRoad(roadId);
     }
 
     private void initializeMusicService(String musicPath){
@@ -72,7 +100,7 @@ public class GameLogic {
     }
 
     public void updateSpectrumListener(){
-        spectrumListener.spectrumDataUpdate(analyzingMusicService.getCurrentTime().toMillis(), 1, magnitudes, phases);
+        spectrumListener.spectrumDataUpdate(analyzingMusicService.getCurrentTime().toMillis(), tempoPeriod, magnitudes, phases);
         magnitudesCopy = spectrumListener.getMagnitudesCopy();
 
         System.out.println(Arrays.toString(magnitudesCopy));
@@ -81,10 +109,15 @@ public class GameLogic {
     }
 
     private void testSpectrumFall(){
-        if (magnitudesCopy[0] > 5){
-            addNoteToAnim(0, Duration.seconds(3), Duration.millis(System.nanoTime()/1000000.));
+        if (magnitudesCopy[0] > 2){
+            addNoteToAnim(0, Duration.seconds(6), Duration.millis(System.nanoTime()/1000000.));
+        }
+        if (magnitudesCopy[1] > 7){
+            addNoteToAnim(2, Duration.seconds(6), Duration.millis(System.nanoTime()/1000000.));
         }
     }
+
+
 
     public void addNoteToAnim(int roadID, Duration fallDuration, Duration bornTime){
         //notes.add(new Note(roadID, fallDuration, bornTime));

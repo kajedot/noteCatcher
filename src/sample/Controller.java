@@ -65,7 +65,6 @@ public class Controller {
     public Controller() {
         afterLoadTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(1.0), e -> {
-                    gameLogic.updateSpectrumListener();
 
                     if (musicPlayersDelay > 0){
                         musicPlayersDelay--;
@@ -122,14 +121,23 @@ public class Controller {
 
     public void setGlobalEventHandler(Parent root) {
         root.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
-            gameLogic.checkIfScored(ev.getCode(), Duration.millis(System.nanoTime()/1000000.));
+            //gameLogic.checkIfScored(ev.getCode(), Duration.millis(System.nanoTime()/1000000.));
+
+            switch (ev.getCode()){
+                case A:
+                    gameBttn0Action();
+                    break;
+            }
+
         });
     }
 
     @FXML
     private void gameBttn0Action() {
-        System.out.println("pressed A");
-        gameBttn0.requestFocus();
+        if (! gameBttn0.isDisabled()) {
+            System.out.println("pressed A");
+            gameLogic.addPoint(0);
+        }
     }
 
     @FXML
