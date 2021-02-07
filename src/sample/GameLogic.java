@@ -12,7 +12,7 @@ import java.util.Set;
 public class GameLogic {
 
     private Animation animation;
-    private long start = System.nanoTime();
+    private SpectrumListener spectrumListener;
 
     public int getPoints() {
         return points;
@@ -32,8 +32,10 @@ public class GameLogic {
     public void startGame(){
         notes.add(new Note(0, Duration.seconds(6), Duration.millis(System.nanoTime()/1000000.)));
         notes.add(new Note(1, Duration.seconds(4), Duration.millis(System.nanoTime()/1000000.)));
-        notes.add(new Note(3, Duration.seconds(3), Duration.millis(System.nanoTime()/1000000.)));
-        showNotes();
+        notes.add(new Note(0, Duration.seconds(3), Duration.millis(System.nanoTime()/1000000.)));
+        //showNotes();
+        spectrumListener = new SpectrumListener();
+        initializeSpectrumListener();
     }
 
     private void initializeAnimation(){
@@ -56,6 +58,19 @@ public class GameLogic {
                 System.out.println("strike time: " + strikeTime + " Note landing time: " + n.getLandingTime());
             }
         }
+    }
+
+    private void initializeSpectrumListener(){
+        double timestamp = System.nanoTime()/1000000.;
+        double duration = 1;
+        float[] magnitudes = new float[0];
+        float[] phases = new float[0];
+
+        spectrumListener.spectrumDataUpdate(timestamp, duration, magnitudes, phases);
+    }
+
+    public void addNoteToAnim(){
+        animation.noteFall(notes.get(2), panes.get(notes.get(2).roadId));
     }
 
     private int keyCodeToID(KeyCode keyCode){

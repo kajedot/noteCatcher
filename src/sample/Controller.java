@@ -16,6 +16,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Controller {
@@ -67,15 +68,20 @@ public class Controller {
 
     private GameLogic gameLogic;
 
+    private final SpectrumListener spectrumListener = new SpectrumListener();
+
     int bands = 128;
     float[] magnitudes = new float[bands]; //default 128 bands
     float[] phases = new float[bands]; //same
+    float[] magnitudesCopy = new float[bands]; //default 128 bands
+
 
     ArrayList<Pane> panes = new ArrayList<>();
 
     public Controller() {
         afterLoadTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(1.0), e -> { //przekleta lambda
+                    testSpectrumFall();
                     stateLbl.setText(musicService.getStatus());
 
                     elapsedTimeLbl.setText(musicService.getCurrentTimeStr());
@@ -87,6 +93,20 @@ public class Controller {
                 })
         );
         afterLoadTimeline.setCycleCount(Timeline.INDEFINITE);
+
+
+    }
+
+    private void testSpectrumFall(){
+        spectrumListener.spectrumDataUpdate(musicService.getCurrentTime().toMillis(), 1000, magnitudes, phases);
+        magnitudesCopy = spectrumListener.getMagnitudesCopy();
+
+        System.out.println(Arrays.toString(magnitudesCopy));
+
+        if (magnitudesCopy[0] > 5){
+            gameLogic.addNoteToAnim();
+        }
+
     }
 
     @FXML
@@ -97,6 +117,9 @@ public class Controller {
         panes.add(road3);
 
         gameLogic = new GameLogic(panes);
+
+
+
     }
 
     private void initializeFile() {
@@ -123,7 +146,6 @@ public class Controller {
         root.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
             gameLogic.checkIfScored(ev.getCode(), Duration.millis(System.nanoTime()/1000000.));
         });
-
     }
 
     @FXML
@@ -152,6 +174,7 @@ public class Controller {
 
     @FXML
     private void playMusic() {
+        musicService.setSpectrumListener(spectrumListener);
         musicService.play();
         afterLoadTimeline.play();
         gameLogic.startGame();

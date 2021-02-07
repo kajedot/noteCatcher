@@ -17,10 +17,11 @@ public class SpectrumListener implements AudioSpectrumListener {
         for (int i=0; i < magnitudes.length; i++){
             if (magnitudes[i] != 0){
                 magnitudes[i] = magnitudes[i] + 60;
+                magnitudesCopy[i] = magnitudes[i];
             }
         }
-        System.out.println(Arrays.toString(magnitudes));
-        this.magnitudesCopy = magnitudes;
+        //System.out.println(Arrays.toString(magnitudes));
+
     }
 
     public float[] getMagnitudesCopy() {

@@ -13,10 +13,8 @@ import javafx.scene.shape.Path;
 import java.util.ArrayList;
 
 public class Animation {
-    ParallelTransition parallelTransition;
 
     public Animation(){
-        parallelTransition = new ParallelTransition();
     }
 
     public void noteFall(Note note, Pane road){
@@ -49,7 +47,8 @@ public class Animation {
         transition.setInterpolator(Interpolator.LINEAR);
 
         transition.setNode(noteImage);
-        parallelTransition.getChildren().add(transition);
+        transition.play();
+        //parallelTransition.getChildren().add(transition);
 
         transition.setOnFinished(finish -> {
             road.getChildren().remove(path);
@@ -61,6 +60,5 @@ public class Animation {
         for (Note n : notes) {
             noteFall(n, panes.get(n.getRoadId()));
         }
-        parallelTransition.play();
     }
 }

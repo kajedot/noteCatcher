@@ -45,7 +45,12 @@ public class MusicService {
         if (Objects.nonNull(player)) {
             if (player.getVolume() > 0)
                 player.setVolume(player.getVolume() - 0.1);
+
         }
+    }
+
+    public void setSpectrumListener(SpectrumListener l){
+        player.setAudioSpectrumListener(l);
     }
 
     public String getStatus(){
