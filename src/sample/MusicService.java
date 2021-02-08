@@ -20,7 +20,7 @@ public class MusicService{
         String returnStr;
         returnStr = String.format("%02d", (int) (objToConvert.toMinutes()));
         returnStr += ":";
-        returnStr += String.format("%02d", Math.round(objToConvert.toSeconds()));
+        returnStr += String.format("%02d", Math.round(objToConvert.toSeconds() % 60));
 
         return returnStr;
     }

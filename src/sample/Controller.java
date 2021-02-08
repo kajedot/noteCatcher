@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -31,7 +31,7 @@ public class Controller {
     @FXML
     private Label bigInfoLbl;
     @FXML
-    private Slider timeSlider;
+    private ProgressBar gameProgressBar;
     @FXML
     private Button gameBttn0;
     @FXML
@@ -108,7 +108,7 @@ public class Controller {
         elapsedTimeLbl.setText(musicService.getCurrentTimeStr());
         generalTimeLbl.setText(musicService.getStopTimeStr());
 
-        timeSlider.adjustValue(musicService.getCurrentTime().toMillis() * 100 / musicService.getStopTime().toMillis());
+        gameProgressBar.setProgress(musicService.getCurrentTime().toMillis() / musicService.getStopTime().toMillis());
 
         pointsLbl.setText("Points: " + Integer.toString(gameLogic.getPoints()));
 
