@@ -2,8 +2,11 @@ package sample;
 //0 172 345
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 import java.util.*;
@@ -13,14 +16,16 @@ public class GameLogic {
     private SpectrumListener spectrumListener;
     private MusicService analyzingMusicService;
 
-    private final Timeline afterLoadTimeline;
+    private final Timeline spectrumListenerTimeline;
+    private final Timeline technicalTimeline;
 
     Set<Note> landedNotes = new LinkedHashSet<>();
 
     Queue<Note>[] notesQueues = new ArrayDeque[4];
 
-    double tempoPeriod = 0.1; //here smth with tempo of music
+    double tempoPeriod = 1; //here smth with tempo of music
     int bands = 128;
+    int musicPlayersDelay;
     float[] magnitudes = new float[bands]; //default 128 bands
     float[] phases = new float[bands]; //same
     float[] magnitudesCopy = new float[bands]; //default 128 bands
@@ -33,28 +38,44 @@ public class GameLogic {
 
     ArrayList<Pane> panes = new ArrayList<>();
 
-    public GameLogic(ArrayList<Pane> p){
+    public GameLogic(ArrayList<Pane> p, int musicPlayersDelay){
+        this.musicPlayersDelay = musicPlayersDelay;
         for (int i=0; i<notesQueues.length; i++){
             notesQueues[i] = new ArrayDeque<Note>();
         }
 
         panes.addAll(p);
 
-        afterLoadTimeline = new Timeline(
+        spectrumListenerTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(tempoPeriod), e -> {
                     updateSpectrumListener();
-                    lightButtonWithNotes();
-                    clearLandedNotes();
                 })
         );
-        afterLoadTimeline.setCycleCount(Timeline.INDEFINITE);
+        spectrumListenerTimeline.setCycleCount(Timeline.INDEFINITE);
 
+        technicalTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(0.01), e -> {
+                    lightButtonWithNotes();
+                    clearLandedNotes();
+                    checkStatus();
+                })
+        );
+        technicalTimeline.setCycleCount(Timeline.INDEFINITE);
+    }
+
+    public void checkStatus(){
+        if (!analyzingMusicService.getStatus().equals("PLAYING")){
+            spectrumListenerTimeline.stop();
+        }
     }
 
     public void lightButtonWithNotes(){
         for (int i=0; i<notesQueues.length; i++){
             if (!notesQueues[i].isEmpty())
                 notesQueues[i].peek().lightButtonWithNote();
+            else {
+                Objects.requireNonNull(findButtonInPane(panes.get(i))).setDisable(true);
+            }
         }
     }
 
@@ -73,7 +94,8 @@ public class GameLogic {
         analyzingMusicService.play();
         analyzingMusicService.mute();
 
-        afterLoadTimeline.play();
+        spectrumListenerTimeline.play();
+        technicalTimeline.play();
     }
 
     public void addPoint(int roadId){
@@ -100,10 +122,10 @@ public class GameLogic {
 
     private void testSpectrumFall(){
         if (magnitudesCopy[0] > 3){
-            addNote(0, Duration.seconds(6), Duration.millis(System.nanoTime()/1000000.));
+            addNote(0, Duration.seconds(musicPlayersDelay), Duration.millis(System.nanoTime()/1000000.));
         }
         if (magnitudesCopy[1] > 7){
-            addNote(1, Duration.seconds(6), Duration.millis(System.nanoTime()/1000000.));
+            addNote(1, Duration.seconds(musicPlayersDelay), Duration.millis(System.nanoTime()/1000000.));
         }
     }
 
@@ -111,17 +133,12 @@ public class GameLogic {
         notesQueues[roadID].add(new Note(panes.get(roadID), fallDuration, bornTime));
     }
 
-    private int keyCodeToID(KeyCode keyCode){
-        switch (keyCode){
-            case A:
-                return 0;
-            case S:
-                return 1;
-            case D:
-                return 2;
-            case F:
-                return 3;
+    private Node findButtonInPane(Pane road){
+        for (Node node : road.getChildren()) {
+            if (node instanceof Button) {
+                return node;
+            }
         }
-        return 4;
+        return null;
     }
 }

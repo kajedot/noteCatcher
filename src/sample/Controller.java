@@ -119,6 +119,8 @@ public class Controller {
         }
     }
 
+    
+
     public void setGlobalEventHandler(Parent root) {
         root.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
             //gameLogic.checkIfScored(ev.getCode(), Duration.millis(System.nanoTime()/1000000.));
@@ -126,6 +128,15 @@ public class Controller {
             switch (ev.getCode()){
                 case A:
                     gameBttn0Action();
+                    break;
+                case S:
+                    gameBttn1Action();
+                    break;
+                case D:
+                    gameBttn2Action();
+                    break;
+                case F:
+                    gameBttn3Action();
                     break;
             }
 
@@ -167,7 +178,7 @@ public class Controller {
     @FXML
     private void playMusic() {
         if (musicFile != null) {
-            gameLogic = new GameLogic(panes);
+            gameLogic = new GameLogic(panes, musicPlayersDelay);
             gameLogic.startGame(musicFile.toURI().toString());
 
             afterLoadTimeline.play();

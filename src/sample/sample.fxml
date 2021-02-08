@@ -91,19 +91,19 @@
          <children>
             <Pane fx:id="road0" prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="gameBttn0" layoutX="69.0" layoutY="460.0" mnemonicParsing="false" onAction="#gameBttn0Action" prefHeight="60.0" prefWidth="60.0" text="A" />
+                  <Button fx:id="gameBttn0" disable="true" layoutX="69.0" layoutY="460.0" mnemonicParsing="false" onAction="#gameBttn0Action" prefHeight="60.0" prefWidth="60.0" text="A" />
                </children></Pane>
             <Pane fx:id="road1" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                <children>
-                  <Button fx:id="gameBttn1" layoutX="69.0" layoutY="460.0" mnemonicParsing="false" onAction="#gameBttn1Action" prefHeight="60.0" prefWidth="60.0" text="S" />
+                  <Button fx:id="gameBttn1" disable="true" layoutX="69.0" layoutY="460.0" mnemonicParsing="false" onAction="#gameBttn1Action" prefHeight="60.0" prefWidth="60.0" text="S" />
                </children></Pane>
             <Pane fx:id="road2" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
                <children>
-                  <Button fx:id="gameBttn2" layoutX="69.0" layoutY="460.0" mnemonicParsing="false" onAction="#gameBttn2Action" prefHeight="60.0" prefWidth="60.0" text="D" />
+                  <Button fx:id="gameBttn2" disable="true" layoutX="69.0" layoutY="460.0" mnemonicParsing="false" onAction="#gameBttn2Action" prefHeight="60.0" prefWidth="60.0" text="D" />
                </children></Pane>
             <Pane fx:id="road3" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3">
                <children>
-                  <Button fx:id="gameBttn3" layoutX="69.0" layoutY="460.0" mnemonicParsing="false" onAction="#gameBttn3Action" prefHeight="60.0" prefWidth="60.0" text="F" />
+                  <Button fx:id="gameBttn3" disable="true" layoutX="69.0" layoutY="460.0" mnemonicParsing="false" onAction="#gameBttn3Action" prefHeight="60.0" prefWidth="60.0" text="F" />
                </children></Pane>
          </children>
       </GridPane>

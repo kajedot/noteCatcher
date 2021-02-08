@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -11,7 +12,8 @@ public class MusicService{
 
     public MusicService(String pathToFile){
         player = new MediaPlayer(new Media(pathToFile));
-        initializeSpectrum();
+
+        player.setOnEndOfMedia(player::stop);
     }
 
     private String durationToStr(Duration objToConvert) {
@@ -21,11 +23,6 @@ public class MusicService{
         returnStr += String.format("%02d", Math.round(objToConvert.toSeconds()));
 
         return returnStr;
-    }
-
-    private void initializeSpectrum() {
-        //TODO
-        //spectrumListener.spectrumDataUpdate(musicService.getCurrentTime().toSeconds(), 1, magnitudes, phases);
     }
 
     public void play(){
@@ -79,5 +76,7 @@ public class MusicService{
     public Duration getStopTime(){
         return player.getStopTime();
     }
+
+
 }
 
