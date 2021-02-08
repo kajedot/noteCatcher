@@ -23,7 +23,7 @@ public class GameLogic {
 
     Queue<Note>[] notesQueues = new ArrayDeque[4];
 
-    double tempoPeriod = 0.5; //here smth with tempo of music
+    double tempoPeriod = 1; //here smth with tempo of music
     int bands = 128;
     int musicPlayersDelay;
     float[] magnitudes = new float[bands]; //default 128 bands
@@ -49,15 +49,15 @@ public class GameLogic {
         spectrumListenerTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(tempoPeriod), e -> {
                     updateSpectrumListener();
+                    checkStatus();
                 })
         );
         spectrumListenerTimeline.setCycleCount(Timeline.INDEFINITE);
 
         technicalTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(0.01), e -> {
+                new KeyFrame(Duration.seconds(0.3), e -> {
                     lightButtonWithNotes();
                     clearLandedNotes();
-                    checkStatus();
                 })
         );
         technicalTimeline.setCycleCount(Timeline.INDEFINITE);
@@ -71,8 +71,10 @@ public class GameLogic {
 
     public void lightButtonWithNotes(){
         for (int i=0; i<notesQueues.length; i++){
-            if (!notesQueues[i].isEmpty())
+            if (!notesQueues[i].isEmpty()) {
+                assert notesQueues[i].peek() != null;
                 notesQueues[i].peek().lightButtonWithNote();
+            }
             else {
                 Objects.requireNonNull(findButtonInPane(panes.get(i))).setDisable(true);
             }
@@ -80,16 +82,18 @@ public class GameLogic {
     }
 
     public void clearLandedNotes(){
-        for (int i=0; i<notesQueues.length; i++){
-            if (!notesQueues[i].isEmpty())
-                if (notesQueues[i].peek().getLandingTime().lessThanOrEqualTo(Duration.millis(System.nanoTime()/1000000.)))
-                    notesQueues[i].remove();
+        for (Queue<Note> notesQueue : notesQueues) {
+            if (!notesQueue.isEmpty()) {
+                assert notesQueue.peek() != null;
+                if (notesQueue.peek().getLandingTime().lessThanOrEqualTo(getSystemTime()))
+                    notesQueue.remove();
+            }
         }
     }
 
     public void startGame(String musicPath){
         initializeMusicService(musicPath);
-        spectrumListener = new SpectrumListener();
+        spectrumListener = new SpectrumListener(bands);
         initializeSpectrumListener();
         analyzingMusicService.play();
         analyzingMusicService.mute();
@@ -109,6 +113,7 @@ public class GameLogic {
     private void initializeSpectrumListener(){
         analyzingMusicService.setSpectrumListener(spectrumListener);
         analyzingMusicService.audioSpectrumInterval(tempoPeriod);
+        analyzingMusicService.setAudioSpectrumNumBands(bands);
     }
 
     public void updateSpectrumListener(){
@@ -116,23 +121,28 @@ public class GameLogic {
         magnitudesCopy = spectrumListener.getMagnitudesCopy();
 
         System.out.println(Arrays.toString(magnitudesCopy));
+        System.out.println(analyzingMusicService.getAudioSpectrumThreshold());
 
         testSpectrumFall();
     }
 
     private void testSpectrumFall(){
-//        if (magnitudesCopy[0] > 3){
-//            addNote(0, Duration.seconds(musicPlayersDelay), Duration.millis(System.nanoTime()/1000000.));
-//        }
-        if (magnitudesCopy[2] > 26){
-            addNote(1, Duration.seconds(musicPlayersDelay), Duration.millis(System.nanoTime()/1000000.));
+        if (magnitudesCopy[1] > 30){
+            addNote(0, Duration.seconds(musicPlayersDelay), getSystemTime());
         }
-//        if (magnitudesCopy[2] > 7){
-//            addNote(0, Duration.seconds(musicPlayersDelay), Duration.millis(System.nanoTime()/1000000.));
-//        }
-//        if (magnitudesCopy[11] > 7){
-//            addNote(1, Duration.seconds(musicPlayersDelay), Duration.millis(System.nanoTime()/1000000.));
-//        }
+        if (magnitudesCopy[3] > 30){
+            addNote(1, Duration.seconds(musicPlayersDelay), getSystemTime());
+        }
+        if (magnitudesCopy[20] > 15){
+            addNote(2, Duration.seconds(musicPlayersDelay), getSystemTime());
+        }
+        if (magnitudesCopy[40] > 15){
+            addNote(3, Duration.seconds(musicPlayersDelay), getSystemTime());
+        }
+    }
+
+    public Duration getSystemTime(){
+        return Duration.millis(System.nanoTime()/1000000.);
     }
 
     public void addNote(int roadID, Duration fallDuration, Duration bornTime){

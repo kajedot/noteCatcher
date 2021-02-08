@@ -146,7 +146,6 @@ public class Controller {
 
     public void setGlobalEventHandler(Parent root) {
         root.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
-            //gameLogic.checkIfScored(ev.getCode(), Duration.millis(System.nanoTime()/1000000.));
 
             switch (ev.getCode()){
                 case A:

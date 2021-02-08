@@ -30,13 +30,9 @@ public class Animation {
     }
 
     public void noteFall(){
-        Point2D startPoint = new Point2D(road.getBoundsInLocal().getWidth()/2, 50);
+        Point2D startPoint = new Point2D(road.getBoundsInLocal().getWidth()/2, -30);
         Point2D endPoint = new Point2D(road.getBoundsInLocal().getWidth()/2, road.getBoundsInLocal().getHeight()-30);
 
-        System.out.println(noteImage.getX() + " " + noteImage.getY());
-
-        noteImage.setFitHeight(50);
-        noteImage.setFitWidth(50);
         noteImage.setX(startPoint.getX());
         noteImage.setY(startPoint.getY());
 
@@ -53,7 +49,7 @@ public class Animation {
         transition.setDuration(fallingDuration);
         transition.setPath(path);
         transition.setCycleCount(1);
-        transition.setInterpolator(Interpolator.LINEAR);
+        transition.setInterpolator(Interpolator.EASE_OUT);
 
         transition.setNode(noteImage);
         transition.play();

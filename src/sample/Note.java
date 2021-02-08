@@ -21,6 +21,8 @@ public class Note {
         this.road = road;
         this.fallingDuration = fallDuration;
         openImageToView();
+        noteView.setFitHeight(50);
+        noteView.setFitWidth(50);
         animate();
     }
 

@@ -43,6 +43,7 @@ public class MusicService{
             if (player.getVolume() > 0)
                 player.setVolume(player.getVolume() - 0.1);
 
+
         }
     }
 
@@ -55,6 +56,10 @@ public class MusicService{
     }
     public void audioSpectrumInterval(Double interval){
         player.setAudioSpectrumInterval(interval);
+    }
+
+    public void setAudioSpectrumNumBands(Integer bands){
+        player.setAudioSpectrumNumBands(bands);
     }
 
     public String getStatus(){
@@ -76,7 +81,9 @@ public class MusicService{
     public Duration getStopTime(){
         return player.getStopTime();
     }
-
+    public Integer getAudioSpectrumThreshold(){
+        return player.getAudioSpectrumThreshold();
+    }
 
 }
 

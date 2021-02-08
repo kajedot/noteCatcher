@@ -8,8 +8,8 @@ public class SpectrumListener implements AudioSpectrumListener {
 
    private float[] magnitudesCopy;
 
-    public SpectrumListener(){
-        magnitudesCopy = new float[128];
+    public SpectrumListener(int bands){
+        magnitudesCopy = new float[bands];
     }
 
     @Override
@@ -20,8 +20,6 @@ public class SpectrumListener implements AudioSpectrumListener {
                 magnitudesCopy[i] = magnitudes[i];
             }
         }
-        //System.out.println(Arrays.toString(magnitudes));
-
     }
 
     public float[] getMagnitudesCopy() {
