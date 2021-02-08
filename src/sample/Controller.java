@@ -85,7 +85,6 @@ public class Controller {
                             musicService.play();
                             startedMusic = true;
                             bigInfoLbl.setVisible(false);
-
                         }
                     }
                     guiUpdates();
@@ -145,8 +144,6 @@ public class Controller {
         }
     }
 
-    
-
     public void setGlobalEventHandler(Parent root) {
         root.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
             //gameLogic.checkIfScored(ev.getCode(), Duration.millis(System.nanoTime()/1000000.));
@@ -165,7 +162,6 @@ public class Controller {
                     gameBttn3Action();
                     break;
             }
-
         });
     }
 
@@ -179,25 +175,25 @@ public class Controller {
 
     @FXML
     private void gameBttn1Action() {
-        if (! gameBttn0.isDisabled()) {
+        if (! gameBttn1.isDisabled()) {
             gameLogic.addPoint(1);
-            gameBttn0.requestFocus();
+            gameBttn1.requestFocus();
         }
     }
 
     @FXML
     private void gameBttn2Action() {
-        if (! gameBttn0.isDisabled()) {
+        if (! gameBttn2.isDisabled()) {
             gameLogic.addPoint(2);
-            gameBttn0.requestFocus();
+            gameBttn2.requestFocus();
         }
     }
 
     @FXML
     private void gameBttn3Action() {
-        if (! gameBttn0.isDisabled()) {
+        if (! gameBttn3.isDisabled()) {
             gameLogic.addPoint(3);
-            gameBttn0.requestFocus();
+            gameBttn3.requestFocus();
         }
     }
 
@@ -209,7 +205,6 @@ public class Controller {
 
             afterLoadTimeline.play();
             playBttn.setDisable(true);
-
         }
     }
 

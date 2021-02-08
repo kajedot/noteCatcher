@@ -23,7 +23,7 @@ public class GameLogic {
 
     Queue<Note>[] notesQueues = new ArrayDeque[4];
 
-    double tempoPeriod = 1; //here smth with tempo of music
+    double tempoPeriod = 0.5; //here smth with tempo of music
     int bands = 128;
     int musicPlayersDelay;
     float[] magnitudes = new float[bands]; //default 128 bands
@@ -121,12 +121,18 @@ public class GameLogic {
     }
 
     private void testSpectrumFall(){
-        if (magnitudesCopy[0] > 3){
-            addNote(0, Duration.seconds(musicPlayersDelay), Duration.millis(System.nanoTime()/1000000.));
-        }
-        if (magnitudesCopy[1] > 7){
+//        if (magnitudesCopy[0] > 3){
+//            addNote(0, Duration.seconds(musicPlayersDelay), Duration.millis(System.nanoTime()/1000000.));
+//        }
+        if (magnitudesCopy[2] > 26){
             addNote(1, Duration.seconds(musicPlayersDelay), Duration.millis(System.nanoTime()/1000000.));
         }
+//        if (magnitudesCopy[2] > 7){
+//            addNote(0, Duration.seconds(musicPlayersDelay), Duration.millis(System.nanoTime()/1000000.));
+//        }
+//        if (magnitudesCopy[11] > 7){
+//            addNote(1, Duration.seconds(musicPlayersDelay), Duration.millis(System.nanoTime()/1000000.));
+//        }
     }
 
     public void addNote(int roadID, Duration fallDuration, Duration bornTime){

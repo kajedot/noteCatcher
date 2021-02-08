@@ -75,7 +75,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label fx:id="fileNameLbl" text="." GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+            <Label fx:id="fileNameLbl" text="no filee" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
             <Label fx:id="pointsLbl" text="Points: 0" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
                <font>
                   <Font size="27.0" />
