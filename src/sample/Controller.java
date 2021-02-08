@@ -29,6 +29,8 @@ public class Controller {
     @FXML
     private Label pointsLbl;
     @FXML
+    private Label bigInfoLbl;
+    @FXML
     private Slider timeSlider;
     @FXML
     private Button gameBttn0;
@@ -38,6 +40,14 @@ public class Controller {
     private Button gameBttn2;
     @FXML
     private Button gameBttn3;
+    @FXML
+    private Button openFileBttn;
+    @FXML
+    private Button VolDownBttn;
+    @FXML
+    private Button VolUpBttn;
+    @FXML
+    private Button playBttn;
     @FXML
     private Pane road0;
     @FXML
@@ -67,11 +77,15 @@ public class Controller {
                 new KeyFrame(Duration.seconds(1.0), e -> {
 
                     if (musicPlayersDelay > 0){
+                        bigInfoLbl.setVisible(true);
+                        bigInfoLbl.setText(Integer.toString(musicPlayersDelay));
                         musicPlayersDelay--;
                     } else {
                         if (! startedMusic){
                             musicService.play();
                             startedMusic = true;
+                            bigInfoLbl.setVisible(false);
+
                         }
                     }
                     guiUpdates();
@@ -86,6 +100,7 @@ public class Controller {
         panes.add(road1);
         panes.add(road2);
         panes.add(road3);
+        bigInfoLbl.setVisible(false);
     }
 
     private void guiUpdates(){
@@ -97,6 +112,16 @@ public class Controller {
         timeSlider.adjustValue(musicService.getCurrentTime().toMillis() * 100 / musicService.getStopTime().toMillis());
 
         pointsLbl.setText("Points: " + Integer.toString(gameLogic.getPoints()));
+
+        if (musicService.getStatus().equals("STOPPED")){
+            afterLoadTimeline.stop();
+            pointsLbl.setVisible(false);
+            bigInfoLbl.setVisible(true);
+            bigInfoLbl.setText("Great game! \n Score: " + Integer.toString(gameLogic.getPoints()) +" points");
+
+            VolDownBttn.setDisable(true);
+            VolUpBttn.setDisable(true);
+        }
     }
 
     private void initializeFile() {
@@ -116,6 +141,7 @@ public class Controller {
         if (Objects.nonNull(musicFile)) {
             System.out.println("chosen file: " + musicFile.getAbsolutePath());
             initializeFile();
+            openFileBttn.setDisable(true);
         }
     }
 
@@ -182,6 +208,8 @@ public class Controller {
             gameLogic.startGame(musicFile.toURI().toString());
 
             afterLoadTimeline.play();
+            playBttn.setDisable(true);
+
         }
     }
 
