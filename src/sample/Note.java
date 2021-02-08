@@ -3,22 +3,25 @@ package sample;
 import javafx.animation.Transition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 import java.io.File;
 
 public class Note {
     String imagePath = "resources/note_icon.png";
-    int roadId;
+    Pane road;
     Duration fallingDuration;
     Duration bornTime;
     ImageView noteView;
+    Animation animation;
 
-    public Note(int roadId, Duration fallDuration, Duration bornTime){
+    public Note(Pane road, Duration fallDuration, Duration bornTime){
         this.bornTime = bornTime;
-        this.roadId = roadId;
+        this.road = road;
         this.fallingDuration = fallDuration;
         openImageToView();
+        animate();
     }
 
     private void openImageToView(){
@@ -35,11 +38,15 @@ public class Note {
         return fallingDuration;
     }
 
-    public int getRoadId() {
-        return roadId;
-    }
-
     public Duration getLandingTime(){
         return fallingDuration.add(bornTime);
+    }
+
+    public void animate(){
+        animation = new Animation(noteView, road, fallingDuration);
+    }
+
+    public void lightButtonWithNote(){
+        animation.lightButtonWithNote(noteView, road);
     }
 }

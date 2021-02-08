@@ -12,43 +12,24 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.util.Duration;
 
 import java.util.*;
 
 public class Animation {
+    ImageView noteImage;
+    Pane road;
+    Duration fallingDuration;
 
-    ArrayList<Pane> roads = new ArrayList<>();
-    Queue[] notesQueues;
+    public Animation(ImageView noteImage, Pane road, Duration fallingDuration){
+        this.noteImage = noteImage;
+        this.road = road;
+        this.fallingDuration = fallingDuration;
 
-    public Set<Note> getRecentlyLandedNotes() {
-
-        Set<Note> tempNotesSet = new LinkedHashSet<>(recentlyLandedNotes);
-        recentlyLandedNotes.clear();
-
-        return tempNotesSet;
+        noteFall();
     }
 
-    public void removeNotesFromRecentlyLanded(Set<Note> set){
-        recentlyLandedNotes.removeAll(set);
-    }
-
-    Set<Note> recentlyLandedNotes = new LinkedHashSet<>();
-
-    public Animation(ArrayList<Pane> panes){
-        roads.addAll(panes);
-
-        notesQueues = new Queue[4];
-        for (int i=0; i<notesQueues.length; i++){
-            notesQueues[i] = new ArrayDeque<Note>();
-        }
-    }
-
-    public void noteFall(Note note, Pane road){
-
-        notesQueues[note.roadId].add(note);
-
-        ImageView noteImage = note.noteView;
-
+    public void noteFall(){
         Point2D startPoint = new Point2D(road.getBoundsInLocal().getWidth()/2, 50);
         Point2D endPoint = new Point2D(road.getBoundsInLocal().getWidth()/2, road.getBoundsInLocal().getHeight()-30);
 
@@ -69,7 +50,7 @@ public class Animation {
         road.getChildren().addAll(path, noteImage);
 
         PathTransition transition = new PathTransition();
-        transition.setDuration(note.fallingDuration);
+        transition.setDuration(fallingDuration);
         transition.setPath(path);
         transition.setCycleCount(1);
         transition.setInterpolator(Interpolator.LINEAR);
@@ -80,30 +61,17 @@ public class Animation {
         transition.setOnFinished(finish -> {
             road.getChildren().remove(path);
             road.getChildren().remove(noteImage);
-            recentlyLandedNotes.add(note);
 
-            notesQueues[note.roadId].remove(note);
         });
     }
 
-    public void showNotes(ArrayList<Note> notes, ArrayList<Pane> panes){
-        for (Note n : notes) {
-            noteFall(n, panes.get(n.getRoadId()));
-        }
-    }
-
-    public void lightButtonsWithNotes(){
-        for (int i=0; i<notesQueues.length; i++){
-            if (!notesQueues[i].isEmpty()) {
-                Note note = (Note) notesQueues[i].peek();
-                Node button = findButtonInPane(roads.get(i));
-                assert button != null;
-                if (checkIfNoteIsOverNode(note.noteView, button)) {
-                    button.setDisable(false);
-                } else {
-                    button.setDisable(true);
-                }
-            }
+    public void lightButtonWithNote(ImageView noteImage, Pane road){
+        Node button = findButtonInPane(road);
+        assert button != null;
+        if (checkIfNoteIsOverNode(noteImage, button)) {
+            button.setDisable(false);
+        } else {
+            button.setDisable(true);
         }
     }
 
@@ -122,10 +90,5 @@ public class Animation {
             }
         }
         return null;
-    }
-
-    public void removeNoteFromRoad(int roadID){
-        notesQueues[roadID].remove();
-
     }
 }

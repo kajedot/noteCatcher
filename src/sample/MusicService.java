@@ -6,7 +6,7 @@ import javafx.util.Duration;
 
 import java.util.Objects;
 
-public class MusicService {
+public class MusicService{
     private final MediaPlayer player;
 
     public MusicService(String pathToFile){
@@ -55,6 +55,9 @@ public class MusicService {
 
     public void mute(){
         player.setMute(true);
+    }
+    public void audioSpectrumInterval(Double interval){
+        player.setAudioSpectrumInterval(interval);
     }
 
     public String getStatus(){

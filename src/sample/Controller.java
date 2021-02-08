@@ -135,27 +135,33 @@ public class Controller {
     @FXML
     private void gameBttn0Action() {
         if (! gameBttn0.isDisabled()) {
-            System.out.println("pressed A");
             gameLogic.addPoint(0);
+            gameBttn0.requestFocus();
         }
     }
 
     @FXML
     private void gameBttn1Action() {
-        System.out.println("pressed S");
-        gameBttn1.requestFocus();
+        if (! gameBttn0.isDisabled()) {
+            gameLogic.addPoint(1);
+            gameBttn0.requestFocus();
+        }
     }
 
     @FXML
     private void gameBttn2Action() {
-        System.out.println("pressed D");
-        gameBttn2.requestFocus();
+        if (! gameBttn0.isDisabled()) {
+            gameLogic.addPoint(2);
+            gameBttn0.requestFocus();
+        }
     }
 
     @FXML
     private void gameBttn3Action() {
-        System.out.println("pressed F");
-        gameBttn3.requestFocus();
+        if (! gameBttn0.isDisabled()) {
+            gameLogic.addPoint(3);
+            gameBttn0.requestFocus();
+        }
     }
 
     @FXML
