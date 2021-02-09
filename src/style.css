@@ -1,0 +1,145 @@
+* {
+	-color : #2A4AA1;
+	-white : #efefef;
+	-gray : #73767B;
+
+	-darkGray : derive(-gray,-20%);
+	-black : #25282c;
+	-abort : #e74c3c;
+}
+
+.root{
+	-fx-background-color : -black;
+	-fx-fill-width : true;
+	-fx-color : -color;
+	-fx-fill-height : true;
+	/* remove the ugly focus shade */
+	-fx-focus-color : transparent;
+	-fx-faint-focus-color: transparent;
+}
+
+/*
+ * **********
+ * LABELS
+ * **********
+*/
+.label{
+	 -fx-text-fill : -white;
+ }
+
+.text-id {
+    -fx-fill: -white;
+}
+
+/*
+ * **********
+ * BUTTONS
+ * **********
+ *
+ */
+.game-button {
+	-fx-background-color : -gray,-gray,-gray,-gray;
+}
+
+.game-button:focused {
+    -fx-color : -color;
+    -fx-background-color : #5dd55d;
+    -fx-focus-color : -color;
+}
+
+.button {
+	-fx-background-color : -gray,-gray,-gray,-gray;
+}
+.button:default{
+	-fx-background-color : -color;
+}
+.button:cancel{
+	-fx-background-color : -abort;
+}
+/*
+.button:focused {
+   -fx-color : -color;
+   -fx-background-color : -color;
+   -fx-focus-color : -color;
+}*/
+
+.button:hover {
+    -fx-color: -darkGray;
+	-fx-inner-border : -color;
+	-fx-body-color : -color;
+}
+
+.button:armed {
+    -fx-color: -white;
+}
+
+/*
+ * **********
+ * ChoiceBox
+ * **********
+ *
+ */
+.choice-box {
+  -fx-background-color: -gray;
+  -fx-mark-color: -white;
+}
+
+.choice-box:focused {
+  -fx-mark-color: -color;
+  -fx-background-color: -darkGray;
+}
+.choice-box > .label {
+  -fx-text-fill: -white;
+}
+.choice-box .context-menu {
+  -fx-background-color: darkGray;
+  }
+.choice-box .menu-item:focused {
+  -fx-background-color: gray;
+  }
+.choice-box .menu-item > .label {
+  -fx-text-fill: white;
+  }
+/*
+ * **********
+ * PROGRESSBAR
+ * **********
+ *
+ */
+.progress-indicator {
+	-fx-indeterminate-segment-count : 12;
+	-fx-progress-color : -color;
+	-fx-spin-enabled : true;
+}
+
+.progress-bar>*.bar{
+	 -fx-background-color : -color;
+ }
+
+.progress-bar>*.track{
+	 -fx-background-color : -gray;
+ }
+
+.progress-bar:determinate>*.determinate-indicator>*.track{
+	 -fx-background-color : -gray;
+ }
+
+.progress-bar:determinate>*.determinate-indicator>*.indicator{
+	 -fx-background-color : -gray;
+ }
+
+/*
+ * **********
+ * Scroll pane
+ * **********
+ *
+ */
+.scroll-pane>*.scroll-bar{
+	-fx-background-color : -gray;
+}
+
+.scroll-pane>*.scroll-bar>*.thumb{
+	-fx-background-color : -color;
+}
+
+/*"FlatBee theme by karlthebee (https://github.com/karlthebee/flatbee)" */

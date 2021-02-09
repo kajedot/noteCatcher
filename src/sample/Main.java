@@ -18,7 +18,9 @@ public class Main extends Application {
         controller.setGlobalEventHandler(root);
         controller.setPrimaryStage(primaryStage);
         primaryStage.setTitle("Music Player");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        Scene scene = new Scene(root, 800, 600);
+        //scene.getStylesheets().add("resources/style.css");
+        primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
 
