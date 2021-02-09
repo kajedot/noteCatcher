@@ -49,7 +49,7 @@ public class Animation {
         transition.setDuration(fallingDuration);
         transition.setPath(path);
         transition.setCycleCount(1);
-        transition.setInterpolator(Interpolator.EASE_OUT);
+        transition.setInterpolator(Interpolator.LINEAR);
 
         transition.setNode(noteImage);
         transition.play();
