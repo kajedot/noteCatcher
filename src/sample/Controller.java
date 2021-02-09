@@ -11,9 +11,9 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import sample.MusicManagement.MusicService;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -110,13 +110,15 @@ public class Controller {
 
         gameProgressBar.setProgress(musicService.getCurrentTime().toMillis() / musicService.getStopTime().toMillis());
 
-        pointsLbl.setText("Points: " + Integer.toString(gameLogic.getPoints()));
+        pointsLbl.setText("Points: " + (int)gameLogic.getPoints());
 
         if (musicService.getStatus().equals("STOPPED")){
             afterLoadTimeline.stop();
             pointsLbl.setVisible(false);
             bigInfoLbl.setVisible(true);
-            bigInfoLbl.setText("Great game! \n Score: " + Integer.toString(gameLogic.getPoints()) +" points");
+            bigInfoLbl.setText("Great game! \n " +
+                    "You catched " + (int)gameLogic.getPoints() + " of " + (int)gameLogic.getAllNotesCount() + " notes! " +
+                    "(" + (Math.round(gameLogic.getPoints()*100/gameLogic.getAllNotesCount()) + "%)"));
 
             VolDownBttn.setDisable(true);
             VolUpBttn.setDisable(true);
@@ -146,53 +148,19 @@ public class Controller {
 
     public void setGlobalEventHandler(Parent root) {
         root.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
-
-            switch (ev.getCode()){
-                case A:
-                    gameBttn0Action();
-                    break;
-                case S:
-                    gameBttn1Action();
-                    break;
-                case D:
-                    gameBttn2Action();
-                    break;
-                case F:
-                    gameBttn3Action();
-                    break;
+            switch (ev.getCode()) {
+                case A -> gameBttnAction(gameBttn0);
+                case S -> gameBttnAction(gameBttn1);
+                case D -> gameBttnAction(gameBttn2);
+                case F -> gameBttnAction(gameBttn3);
             }
         });
     }
 
-    @FXML
-    private void gameBttn0Action() {
-        if (! gameBttn0.isDisabled()) {
-            gameLogic.addPoint(0);
-            gameBttn0.requestFocus();
-        }
-    }
-
-    @FXML
-    private void gameBttn1Action() {
-        if (! gameBttn1.isDisabled()) {
-            gameLogic.addPoint(1);
-            gameBttn1.requestFocus();
-        }
-    }
-
-    @FXML
-    private void gameBttn2Action() {
-        if (! gameBttn2.isDisabled()) {
-            gameLogic.addPoint(2);
-            gameBttn2.requestFocus();
-        }
-    }
-
-    @FXML
-    private void gameBttn3Action() {
-        if (! gameBttn3.isDisabled()) {
-            gameLogic.addPoint(3);
-            gameBttn3.requestFocus();
+    private void gameBttnAction(Button button) {
+        if (! button.isDisabled()) {
+            gameLogic.addPoint();
+            button.requestFocus();
         }
     }
 
@@ -209,11 +177,13 @@ public class Controller {
 
     @FXML
     private void volumeUp() {
-        musicService.volumeUp();
+        if (musicFile != null)
+            musicService.volumeUp();
     }
 
     @FXML
     private void volumeDown() {
-        musicService.volumeDown();
+        if (musicFile != null)
+            musicService.volumeDown();
     }
 }

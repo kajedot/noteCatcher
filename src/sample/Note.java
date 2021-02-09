@@ -1,6 +1,5 @@
 package sample;
 
-import javafx.animation.Transition;
 import javafx.scene.CacheHint;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -33,14 +32,6 @@ public class Note {
         File input = new File(imagePath);
         Image image = new Image(input.toURI().toString());
         noteView = new ImageView(image);
-    }
-
-    public ImageView getNoteView() {
-        return noteView;
-    }
-
-    public Duration getFallingDuration() {
-        return fallingDuration;
     }
 
     public Duration getLandingTime(){

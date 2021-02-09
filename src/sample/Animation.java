@@ -1,20 +1,16 @@
 package sample;
 
 import javafx.animation.Interpolator;
-import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
-
-import java.util.*;
 
 public class Animation {
     ImageView noteImage;
@@ -64,19 +60,12 @@ public class Animation {
     public void lightButtonWithNote(ImageView noteImage, Pane road){
         Node button = findButtonInPane(road);
         assert button != null;
-        if (checkIfNoteIsOverNode(noteImage, button)) {
-            button.setDisable(false);
-        } else {
-            button.setDisable(true);
-        }
+        button.setDisable(!checkIfNoteIsOverNode(noteImage, button));
     }
 
     private boolean checkIfNoteIsOverNode(ImageView noteView, Node node){
 
-        if(node.getBoundsInParent().intersects(noteView.getBoundsInParent()))
-            return true;
-        else
-            return false;
+        return node.getBoundsInParent().intersects(noteView.getBoundsInParent());
     }
 
     private Node findButtonInPane(Pane road){

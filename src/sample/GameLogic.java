@@ -1,13 +1,12 @@
 package sample;
-//0 172 345
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import sample.MusicManagement.MusicService;
+import sample.MusicManagement.SpectrumListener;
 
 import java.util.*;
 
@@ -19,22 +18,27 @@ public class GameLogic {
     private final Timeline spectrumListenerTimeline;
     private final Timeline technicalTimeline;
 
-    Set<Note> landedNotes = new LinkedHashSet<>();
+    public float getAllNotesCount() {
+        return allNotesCount;
+    }
+
+    private float allNotesCount = 0;
 
     Queue<Note>[] notesQueues = new ArrayDeque[4];
 
-    double tempoPeriod = 1; //here smth with tempo of music
+    double tempoPeriod = 1;
+    int threshold;
     int bands = 128;
     int musicPlayersDelay;
-    float[] magnitudes = new float[bands]; //default 128 bands
-    float[] phases = new float[bands]; //same
-    float[] magnitudesCopy = new float[bands]; //default 128 bands
+    float[] magnitudes = new float[bands];
+    float[] phases = new float[bands];
+    float[] magnitudesCopy = new float[bands];
 
-    public int getPoints() {
+    public float getPoints() {
         return points;
     }
 
-    int points = 0;
+    private float points = 0;
 
     ArrayList<Pane> panes = new ArrayList<>();
 
@@ -93,7 +97,7 @@ public class GameLogic {
 
     public void startGame(String musicPath){
         initializeMusicService(musicPath);
-        spectrumListener = new SpectrumListener(bands);
+        spectrumListener = new SpectrumListener(bands, threshold);
         initializeSpectrumListener();
         analyzingMusicService.play();
         analyzingMusicService.mute();
@@ -102,12 +106,13 @@ public class GameLogic {
         technicalTimeline.play();
     }
 
-    public void addPoint(int roadId){
+    public void addPoint(){
         points++;
     }
 
     private void initializeMusicService(String musicPath){
         analyzingMusicService = new MusicService(musicPath);
+        threshold = analyzingMusicService.getAudioSpectrumThreshold();
     }
 
     private void initializeSpectrumListener(){
@@ -121,22 +126,21 @@ public class GameLogic {
         magnitudesCopy = spectrumListener.getMagnitudesCopy();
 
         System.out.println(Arrays.toString(magnitudesCopy));
-        System.out.println(analyzingMusicService.getAudioSpectrumThreshold());
 
         testSpectrumFall();
     }
 
     private void testSpectrumFall(){
-        if (magnitudesCopy[1] > 30){
+        if (magnitudesCopy[1] > 29){
             addNote(0, Duration.seconds(musicPlayersDelay), getSystemTime());
         }
-        if (magnitudesCopy[3] > 30){
+        if (magnitudesCopy[3] > 26){
             addNote(1, Duration.seconds(musicPlayersDelay), getSystemTime());
         }
         if (magnitudesCopy[20] > 15){
             addNote(2, Duration.seconds(musicPlayersDelay), getSystemTime());
         }
-        if (magnitudesCopy[40] > 15){
+        if (magnitudesCopy[40] > 7){
             addNote(3, Duration.seconds(musicPlayersDelay), getSystemTime());
         }
     }
@@ -147,6 +151,7 @@ public class GameLogic {
 
     public void addNote(int roadID, Duration fallDuration, Duration bornTime){
         notesQueues[roadID].add(new Note(panes.get(roadID), fallDuration, bornTime));
+        allNotesCount++;
     }
 
     private Node findButtonInPane(Pane road){

@@ -1,22 +1,23 @@
-package sample;
+package sample.MusicManagement;
 
 import javafx.scene.media.AudioSpectrumListener;
 
-import java.util.Arrays;
-
 public class SpectrumListener implements AudioSpectrumListener {
 
-   private float[] magnitudesCopy;
+   private final float[] magnitudesCopy;
 
-    public SpectrumListener(int bands){
+   private final int threshold;
+
+    public SpectrumListener(int bands, int threshold){
         magnitudesCopy = new float[bands];
+        this.threshold = threshold;
     }
 
     @Override
     public void spectrumDataUpdate(double timestamp, double duration, float[] magnitudes, float[] phases) {
         for (int i=0; i < magnitudes.length; i++){
             if (magnitudes[i] != 0){
-                magnitudes[i] = magnitudes[i] + 60;
+                magnitudes[i] = magnitudes[i] - threshold;
                 magnitudesCopy[i] = magnitudes[i];
             }
         }

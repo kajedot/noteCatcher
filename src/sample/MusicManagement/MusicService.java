@@ -1,6 +1,5 @@
-package sample;
+package sample.MusicManagement;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
